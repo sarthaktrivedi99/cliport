@@ -376,7 +376,7 @@ class Environment(gym.Env):
 
         for config_index,_ in enumerate(self.agent_cams):
             if not os.path.exists(os.path.join(self.record_cfg['save_video_path'], str(config_index))):
-                os.makedirs(self.record_cfg['save_video_path'], str(config_index))
+                os.makedirs(os.path.join(self.record_cfg['save_video_path'], str(config_index)))
 
         # close and save existing writer
         if hasattr(self, 'video_writer'):
