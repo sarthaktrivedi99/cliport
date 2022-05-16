@@ -376,14 +376,14 @@ class Environment(gym.Env):
 
         # close and save existing writer
         if hasattr(self, 'video_writer'):
-            for config in self.agent_cams:
-                self.video_writer[config].close()
+            for config_index, config in enumerate(self.agent_cams):
+                self.video_writer[config_index].close()
         # initialize dictionary that holds writers
         self.video_writer = dict()
 
         # initialize writer
         for config_index, config in enumerate(self.agent_cams):
-            self.video_writer[config] = imageio.get_writer(os.path.join(self.record_cfg['save_video_path'], str(config_index),
+            self.video_writer[config_index] = imageio.get_writer(os.path.join(self.record_cfg['save_video_path'], str(config_index),
                                                                 f"{video_filename}.mp4"),
                                                    fps=self.record_cfg['fps'],
                                                    format='FFMPEG',
@@ -393,8 +393,8 @@ class Environment(gym.Env):
 
     def end_rec(self):
         if hasattr(self, 'video_writer'):
-            for config in self.agent_cams:
-                self.video_writer[config].close()
+            for config_index, config in enumerate(self.agent_cams):
+                self.video_writer[config_index].close()
 
         p.setRealTimeSimulation(True)
         self.save_video = False
@@ -402,7 +402,7 @@ class Environment(gym.Env):
     def add_video_frame(self):
         # Render frame.
         # config = self.agent_cams[0]
-        for config in self.agent_cams:
+        for config_index, config in enumerate(self.agent_cams):
             image_size = (self.record_cfg['video_height'], self.record_cfg['video_width'])
             color, depth, _ = self.render_camera(config, image_size, shadow=0)
             color = np.array(color)
@@ -438,7 +438,7 @@ class Environment(gym.Env):
 
                 color = np.array(color)
 
-            self.video_writer[config].append_data(color)
+            self.video_writer[config_index].append_data(color)
 
     def movep(self, pose, speed=0.01):
         """Move UR5 to target end effector pose."""
