@@ -120,8 +120,8 @@ class Environment(gym.Env):
 
     def __del__(self):
         if hasattr(self, 'video_writer'):
-            for config in self.agent_cams:
-                self.video_writer[config].close()
+            for config_index,_ in enumerate(self.agent_cams):
+                self.video_writer[config_index].close()
 
     @property
     def is_static(self):
