@@ -120,7 +120,8 @@ class Environment(gym.Env):
 
     def __del__(self):
         if hasattr(self, 'video_writer'):
-            self.video_writer.close()
+            for config in self.agent_cams:
+                self.video_writer[config].close()
 
     @property
     def is_static(self):
@@ -375,63 +376,69 @@ class Environment(gym.Env):
 
         # close and save existing writer
         if hasattr(self, 'video_writer'):
-            self.video_writer.close()
+            for config in self.agent_cams:
+                self.video_writer[config].close()
+        # initialize dictionary that holds writers
+        self.video_writer = dict()
 
         # initialize writer
-        self.video_writer = imageio.get_writer(os.path.join(self.record_cfg['save_video_path'],
-                                                            f"{video_filename}.mp4"),
-                                               fps=self.record_cfg['fps'],
-                                               format='FFMPEG',
-                                               codec='h264',)
+        for config_index, config in enumerate(self.agent_cams):
+            self.video_writer[config] = imageio.get_writer(os.path.join(self.record_cfg['save_video_path'], str(config_index),
+                                                                f"{video_filename}.mp4"),
+                                                   fps=self.record_cfg['fps'],
+                                                   format='FFMPEG',
+                                                   codec='h264',)
         p.setRealTimeSimulation(False)
         self.save_video = True
 
     def end_rec(self):
         if hasattr(self, 'video_writer'):
-            self.video_writer.close()
+            for config in self.agent_cams:
+                self.video_writer[config].close()
 
         p.setRealTimeSimulation(True)
         self.save_video = False
 
     def add_video_frame(self):
         # Render frame.
-        config = self.agent_cams[0]
-        image_size = (self.record_cfg['video_height'], self.record_cfg['video_width'])
-        color, depth, _ = self.render_camera(config, image_size, shadow=0)
-        color = np.array(color)
-
-        # Add language instruction to video.
-        if self.record_cfg['add_text']:
-            lang_goal = self.get_lang_goal()
-            reward = f"Success: {self.task.get_reward():.3f}"
-
-            font = cv2.FONT_HERSHEY_DUPLEX
-            font_scale = 0.65
-            font_thickness = 1
-
-            # Write language goal.
-            lang_textsize = cv2.getTextSize(lang_goal, font, font_scale, font_thickness)[0]
-            lang_textX = (image_size[1] - lang_textsize[0]) // 2
-
-            color = cv2.putText(color, lang_goal, org=(lang_textX, 600),
-                                fontScale=font_scale,
-                                fontFace=font,
-                                color=(0, 0, 0),
-                                thickness=font_thickness, lineType=cv2.LINE_AA)
-
-            ## Write Reward.
-            # reward_textsize = cv2.getTextSize(reward, font, font_scale, font_thickness)[0]
-            # reward_textX = (image_size[1] - reward_textsize[0]) // 2
-            #
-            # color = cv2.putText(color, reward, org=(reward_textX, 634),
-            #                     fontScale=font_scale,
-            #                     fontFace=font,
-            #                     color=(0, 0, 0),
-            #                     thickness=font_thickness, lineType=cv2.LINE_AA)
-
+        # config = self.agent_cams[0]
+        for config in self.agent_cams:
+            image_size = (self.record_cfg['video_height'], self.record_cfg['video_width'])
+            color, depth, _ = self.render_camera(config, image_size, shadow=0)
             color = np.array(color)
 
-        self.video_writer.append_data(color)
+            # Add language instruction to video.
+            if self.record_cfg['add_text']:
+                lang_goal = self.get_lang_goal()
+                reward = f"Success: {self.task.get_reward():.3f}"
+
+                font = cv2.FONT_HERSHEY_DUPLEX
+                font_scale = 0.65
+                font_thickness = 1
+
+                # Write language goal.
+                lang_textsize = cv2.getTextSize(lang_goal, font, font_scale, font_thickness)[0]
+                lang_textX = (image_size[1] - lang_textsize[0]) // 2
+
+                color = cv2.putText(color, lang_goal, org=(lang_textX, 600),
+                                    fontScale=font_scale,
+                                    fontFace=font,
+                                    color=(0, 0, 0),
+                                    thickness=font_thickness, lineType=cv2.LINE_AA)
+
+                ## Write Reward.
+                # reward_textsize = cv2.getTextSize(reward, font, font_scale, font_thickness)[0]
+                # reward_textX = (image_size[1] - reward_textsize[0]) // 2
+                #
+                # color = cv2.putText(color, reward, org=(reward_textX, 634),
+                #                     fontScale=font_scale,
+                #                     fontFace=font,
+                #                     color=(0, 0, 0),
+                #                     thickness=font_thickness, lineType=cv2.LINE_AA)
+
+                color = np.array(color)
+
+            self.video_writer[config].append_data(color)
 
     def movep(self, pose, speed=0.01):
         """Move UR5 to target end effector pose."""
