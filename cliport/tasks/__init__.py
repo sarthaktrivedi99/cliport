@@ -65,6 +65,7 @@ names = {
     'assembling-kits-seq-unseen-colors': AssemblingKitsSeqUnseenColors,
     'assembling-kits-seq-full': AssemblingKitsSeqFull,
     'packing-shapes': PackingShapes,
+    'packing-shapes-base-tcn': PackingShapes_Base_TCN,
     'packing-boxes-pairs-seen-colors': PackingBoxesPairsSeenColors,
     'packing-boxes-pairs-unseen-colors': PackingBoxesPairsUnseenColors,
     'packing-boxes-pairs-full': PackingBoxesPairsFull,
