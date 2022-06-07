@@ -22,6 +22,7 @@ from cliport.tasks.packing_google_objects import PackingSeenGoogleObjectsSeq
 from cliport.tasks.packing_google_objects import PackingUnseenGoogleObjectsSeq
 from cliport.tasks.packing_google_objects import PackingSeenGoogleObjectsGroup
 from cliport.tasks.packing_google_objects import PackingUnseenGoogleObjectsGroup
+from cliport.tasks.packing_shapes_base_tcn import PackingShapes_Base_TCN
 from cliport.tasks.palletizing_boxes import PalletizingBoxes
 from cliport.tasks.place_red_in_green import PlaceRedInGreen
 from cliport.tasks.put_block_in_bowl import PutBlockInBowlSeenColors
