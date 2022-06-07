@@ -16,8 +16,8 @@ class PackingShapes_Base_TCN(Task):
         self.max_steps = 1
         # self.metric = 'pose'
         # self.primitive = 'pick_place'
-        self.train_set = np.arange(0, 14)
-        self.test_set = np.arange(14, 20)
+        self.train_set = np.arange(0, 1)
+        self.test_set = np.arange(0.1)
         self.homogeneous = False
 
         self.lang_template = "pack the {obj} in the brown box"
