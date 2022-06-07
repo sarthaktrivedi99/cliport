@@ -31,7 +31,7 @@ class PackingShapes_Base_TCN(Task):
             0: "square",
         }
 
-        n_objects = 5
+        n_objects = 1
         if self.mode == 'train':
             obj_shapes = np.random.choice(self.train_set, n_objects, replace=False)
         else:
